@@ -4,7 +4,7 @@ while True:
         if number_of_expenses <= 0 :
             raise TypeError
     except TypeError:
-        print("Enter a valid Number (1-1000) ")
+        print("Enter a valid Number - (1-1000) ")
     else:
         break
 
