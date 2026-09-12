@@ -54,4 +54,19 @@ def add_expense():
 
 
         
+def view_expense():
+    print()
+    print("==== Expenses ====")
+    expenses = []
+    with open("expenseDiary.txt","r") as file:
+        for line in file:
+            data = json.loads(line.strip())
+            expenses.append(data)
+    for exp in expenses:
+        print(f'Expense Name : {exp["Expense Name"]}')
+        print(f'Amount : {exp["Amount"]}')
+        print(f'Expense type : {exp["Expense type"]}')
+        print()
         
+
+
