@@ -34,4 +34,5 @@ def main_menu():
         input('\nPress "Enter" to return to the main menu.')
 
 def add_expense():
-    
+    while True :
+        
