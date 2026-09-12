@@ -36,7 +36,7 @@ def main_menu():
 def add_expense():
     while True :
         
-        expense_name = input("Expense Name : ")
+        expense_name = input("Expense Name : ").strip().title()
         try:
             amount = int(input("Amount : "))
             if amount < 0 :
@@ -45,7 +45,7 @@ def add_expense():
             print("Invalid amount , reEnter details")
             continue
         
-        expense_type = input("Expense type : ")
+        expense_type = input("Expense type : ").strip().title()
         break
     dictionary_to_save = {"Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
     with open("expenseDiary.txt","a") as file:
@@ -70,3 +70,18 @@ def view_expense():
         
 
 
+def search_expense():
+    expenses = []
+    exp_to_search = input("Search Category : ").strip().title()
+    with open("expenseDiary.txt","r") as file:
+        for line in file:
+            data = json.loads(line.strip())
+            expenses.append(data)
+    for exp in expenses:
+        if exp["Category"] == exp_to_search:
+            print()
+            print(f'Expense Name : {exp["Expense Name"]}')
+            print(f'Amount : {exp["Amount"]}')
+            print(f'Expense type : {exp["Expense type"]}')
+
+            
