@@ -85,3 +85,15 @@ def search_expense():
             print(f'Expense type : {exp["Expense type"]}')
 
             
+def delete_expense():
+    print()
+    exp_to_delete = input("Delete Expense : ").strip().title()
+    expenses = []
+    with open("expenseDiary.txt","r") as file:
+        for line in file:
+            data = json.loads(line.strip())
+            expenses.append(data)
+        expenses = [ex for ex in expenses if ex["Expense Name"] != exp_to_delete]
+    for exp in expenses:
+        with open("emxpenseDiary.txt","w") as file:
+            file.write(json.dump(expenses) + "\n")
