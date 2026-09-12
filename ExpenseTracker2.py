@@ -1,5 +1,5 @@
 import sys
-import re
+import json
 
 def main_menu():
     while True:
@@ -35,4 +35,23 @@ def main_menu():
 
 def add_expense():
     while True :
+        
+        expense_name = input("Expense Name : ")
+        try:
+            amount = int(input("Amount : "))
+            if amount < 0 :
+                raise ValueError
+        except ValueError:
+            print("Invalid amount , reEnter details")
+            continue
+        
+        expense_type = input("Expense type : ")
+        break
+    dictionary_to_save = {"Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
+    with open("expenseDiary.txt","a") as file:
+        file.write(json.dump(dictionary_to_save) + "\n")
+
+
+
+        
         
