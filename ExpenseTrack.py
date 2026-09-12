@@ -55,11 +55,11 @@ def Lowest_expense(expenses):
 def Spending_level():
     total = total_spendings()
     if total < 5000 :
-        print("Spending Level - Low spendings.")
+        print("Spending Level -- Low spendings.")
     elif total < 10000:
-        print("Spending level - Moderate spendings")
+        print("Spending level -- Moderate spendings")
     else:
-        print("Spending level - High spendings")
+        print("Spending level -- High spendings")
 
 
 
