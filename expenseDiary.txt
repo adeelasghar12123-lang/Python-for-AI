@@ -2,25 +2,13 @@
     {
         "Expense Id": 1,
         "Expense Name": "Breakfast",
-        "Amount": 500.0,
+        "Amount": 600.0,
         "Expense type": "Food"
     },
     {
         "Expense Id": 2,
-        "Expense Name": "Shoes",
-        "Amount": 7000.0,
-        "Expense type": "Shopping"
-    },
-    {
-        "Expense Id": 3,
-        "Expense Name": "Shirt",
-        "Amount": 1500.0,
-        "Expense type": "Shopping"
-    },
-    {
-        "Expense Id": 4,
-        "Expense Name": "Dinner",
-        "Amount": 700.0,
+        "Expense Name": "Lunch",
+        "Amount": 800.0,
         "Expense type": "Food"
     }
 ]

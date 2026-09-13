@@ -20,7 +20,7 @@ def main_menu():
             continue
 
         if command == 1:
-            add_expense(expenses)
+            add_expense()
         elif command == 2:
             view_expense()
         elif command == 3:
@@ -35,47 +35,21 @@ def main_menu():
             
         input('\nPress "Enter" to return to the main menu.')
 
-
-
-
-
-
-
-
-expenses = []
-
 def save_to_file(expenses):
+    with open("expenseDiary.txt","w") as file:
+        json.dump(expenses, file, indent=4)
+
+def load_from_file():
     try:
-        with open("expenseDiary.txt","w") as file:
-            json.dump(expenses,file,indent=4)
-    except json.JSONDecodeError:
-        print("Expense file is corrupted.")
+        with open("expenseDiary.txt", "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
         return []
 
-def load_from_file(expenses = expenses):
-    try:
-        with open("expenseDiary.txt","r") as file:
-            expenses.append(json.load(file))
-            return expenses
-    except FileNotFoundError:
-        return []
-        
-
-
-
-
-
-
-def add_expense(expenses):
+def add_expense():
     print()
+    expenses = load_from_file()
     while True :
-        try:
-            expense_id = int(input("Expense Id : "))
-            if expense_id < 1:
-                raise ValueError
-        except ValueError:
-            print("Enter Valid expense Id ! ")
-            continue
         expense_name = input("Expense Name : ").strip().title()
         try:
             amount = float(input("Amount : "))
@@ -87,15 +61,13 @@ def add_expense(expenses):
         
         expense_type = input("Expense type : ").strip().title()
         break
+
+    new_id = max([exp.get("Expense Id", 0) for exp in expenses], default=0) + 1
         
-    dictionary_to_save = {"Expense Id" : expense_id , "Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
+    dictionary_to_save = {"Expense Id" : new_id , "Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
     expenses.append(dictionary_to_save)
     save_to_file(expenses)    
     print("Expense added successfully!")
-
-
-
-
 
 def view_expense():
     print("\n==== Expenses ====")
@@ -106,98 +78,93 @@ def view_expense():
             print(f'{exp["Expense Id"]} : {exp["Expense Name"]} : {exp["Amount"]} : {exp["Expense type"]} ')
     else:
         print("No expenses to show !")
-        return
-        
-
-
-
-
-
-
-
 
 def search_expense():
     print()
-    search_id = int(input("Search expense by Id : "))
+    while True:
+        try:
+            search_id = int(input("Search expense by Id : "))
+            break
+        except ValueError:
+            print("Enter valid numerical Id !")
+            
     expenses = load_from_file()
+    searched = None
     for exp in expenses:
         if exp["Expense Id"] == search_id:
             searched = exp
+            break # Can stop searching once found
+            
     if searched:
         print(f'{searched["Expense Id"]} : {searched["Expense Name"]} : {searched["Amount"]} : {searched["Expense type"]} ')
     else:
         print("Couldn't find any expense with this id !")
 
-
-
-
-
-
-
-
-
-
 def delete_expense():
     print()
     expenses = load_from_file()
-    no_of_expenses = len(expenses)
-    if no_of_expenses == 0:
+    original_count = len(expenses)
+    
+    if original_count == 0:
         print("No expenses in Diary to be deleted !")
-    else:
-        while True:
-            try:
-                to_be_deleted = int(input(f'Delete by Id (1-{no_of_expenses})'))
-                if to_be_deleted > no_of_expenses:
-                    raise ValueError
-            except ValueError:
-                print("Enter valid Id")
-                continue
+        return
+    
+    while True:
+        try:
+            # FIXED: Removed len() around the variable
+            to_be_deleted = int(input('Delete by Id: '))
+            break
+        except ValueError:
+            print("Enter valid numerical Id")
+            continue
+            
     expenses = [expense for expense in expenses if expense.get("Expense Id") != to_be_deleted]
-    print("Deleted successfully !")
-
-
+    
+    if len(expenses) == original_count:
+        print("Expense not found !")
+    else:
+        save_to_file(expenses)
+        print("Deleted successfully !")
 
 def show_stats():
+    expenses = load_from_file()
+    if not expenses:
+        print("No expenses to show stats")
+        return
+        
     print()
     print("======== STATISTICS =========")
-    print(f'Total Expenses : {total_expense()}')
-    print(f'Average Expenses : {average_expenses()}')
+    print(f'Total Expenses : {total_expense(expenses)}')
+    print(f'Average Expenses : {average_expenses(expenses):.2f}')
     print()
-    print(f'Highest Expense : {highest_expense()}')
-    print(f'Lowest Expense : {lowest_expense()}')
+    highest_expense(expenses)
     print()
-    print(total_by_category())
+    lowest_expense(expenses)
+    print()
+    total_by_category(expenses)
 
-def total_expense():
-    expenses = load_from_file()
+def total_expense(expenses):
     total = 0
     for exp in expenses:
-        total = exp["Amount"]
+        total += exp["Amount"]
     return total
 
+def average_expenses(expenses):
+    average = total_expense(expenses)/len(expenses)
+    return average
 
-
-def average_expenses():
-    expenses = load_from_file()
-    no_of_expenses = len(expenses)
-    average = total_expense()/no_of_expenses
-
-def highest_expense():
-    expenses = load_from_file()
-    highest_ex =  max(expenses , key = lambda x:x["Amount"])
+def highest_expense(expenses):
+    highest_ex = max(expenses , key = lambda x:x["Amount"])
+    print("===== Highest Expense =====")
     print(f'{highest_ex["Expense Id"]} -- {highest_ex["Expense Name"]} -- {highest_ex["Amount"]} -- {highest_ex["Expense type"]}')
 
-
-def lowest_expense():
-    expenses = load_from_file()
-    lowest_ex =  min(expenses , key = lambda x:x["Amount"])
+def lowest_expense(expenses):
+    lowest_ex = min(expenses , key = lambda x:x["Amount"])
+    print("===== Lowest Expense =====")
     print(f'{lowest_ex["Expense Id"]} -- {lowest_ex["Expense Name"]} -- {lowest_ex["Amount"]} -- {lowest_ex["Expense type"]}')
 
-
-
-def total_by_category():
+def total_by_category(expenses):
     category_totals = {}
-    expenses = load_from_file()
 
     for exp in expenses:
         category = exp["Expense type"]
@@ -206,18 +173,9 @@ def total_by_category():
             category_totals[category] += amount
         else:
             category_totals[category] = amount
-    for category,total in category_totals:
+            
+    for category,total in category_totals.items():
         print(f'{category} -- {total}')
 
-
-
-main_menu()
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    main_menu()
