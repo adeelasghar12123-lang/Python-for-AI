@@ -52,10 +52,13 @@ def save_to_file(expenses):
         print("Expense file is corrupted.")
         return []
 
-def load_from_file():
-    with open("expenseDiary.txt","r") as file:
-        expenses.append(json.loads(file))
-        return expenses
+def load_from_file(expenses = expenses):
+    try:
+        with open("expenseDiary.txt","r") as file:
+            expenses.append(json.load(file))
+            return expenses
+    except FileNotFoundError:
+        return []
         
 
 
@@ -66,6 +69,13 @@ def load_from_file():
 def add_expense(expenses):
     print()
     while True :
+        try:
+            expense_id = int(input("Expense Id : "))
+            if expense_id < 1:
+                raise ValueError
+        except ValueError:
+            print("Enter Valid expense Id ! ")
+            continue
         expense_name = input("Expense Name : ").strip().title()
         try:
             amount = float(input("Amount : "))
@@ -78,7 +88,7 @@ def add_expense(expenses):
         expense_type = input("Expense type : ").strip().title()
         break
         
-    dictionary_to_save = {"Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
+    dictionary_to_save = {"Expense Id" : expense_id , "Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
     expenses.append(dictionary_to_save)
     save_to_file(expenses)    
     print("Expense added successfully!")
@@ -93,9 +103,7 @@ def view_expense():
     if expenses:
         for exp in expenses:
             print()
-            print(f'Expense Name : {exp["Expense Name"]}')
-            print(f'Amount : {exp["Amount"]}')
-            print(f'Expense Type : {exp["Expense type"]}')
+            print(f'{exp["Expense Id"]} : {exp["Expense Name"]} : {exp["Amount"]} : {exp["Expense type"]} ')
     else:
         print("No expenses to show !")
         return
@@ -110,60 +118,106 @@ def view_expense():
 
 def search_expense():
     print()
-    expense_to_search = input
+    search_id = int(input("Search expense by Id : "))
+    expenses = load_from_file()
+    for exp in expenses:
+        if exp["Expense Id"] == search_id:
+            searched = exp
+    if searched:
+        print(f'{searched["Expense Id"]} : {searched["Expense Name"]} : {searched["Amount"]} : {searched["Expense type"]} ')
+    else:
+        print("Couldn't find any expense with this id !")
+
+
+
+
+
+
+
+
+
 
 def delete_expense():
     print()
-    exp_to_delete = input("Delete Expense Name : ").strip().title()
-    expenses = []
-    
-    try:
-        with open("expenseDiary.txt", "r") as file:
-            for line in file:
-                data = json.loads(line.strip())
-                expenses.append(data)
-    except FileNotFoundError:
-        print("No expenses recorded yet.")
-        return
+    expenses = load_from_file()
+    no_of_expenses = len(expenses)
+    if no_of_expenses == 0:
+        print("No expenses in Diary to be deleted !")
+    else:
+        while True:
+            try:
+                to_be_deleted = int(input(f'Delete by Id (1-{no_of_expenses})'))
+                if to_be_deleted > no_of_expenses:
+                    raise ValueError
+            except ValueError:
+                print("Enter valid Id")
+                continue
+    expenses = [expense for expense in expenses if expense.get("Expense Id") != to_be_deleted]
+    print("Deleted successfully !")
 
-    # Filter out the expense the user wants to delete
-    original_count = len(expenses)
-    expenses = [ex for ex in expenses if ex["Expense Name"] != exp_to_delete]
-    
-    if len(expenses) == original_count:
-        print("Expense not found.")
-        return
 
-    # Open file in "w" mode ONCE to overwrite it, then loop through and write each dict
-    with open("expenseDiary.txt", "w") as file:
-        for exp in expenses:
-            file.write(json.dumps(exp) + "\n")
-            
-    print(f"'{exp_to_delete}' has been deleted.")
 
 def show_stats():
-    print("\n==== Statistics ====")
-    expenses = []
-    
-    # Must open in "r" mode to read stats, not "w" mode
-    try:
-        with open("expenseDiary.txt", "r") as file:
-            for line in file:
-                data = json.loads(line.strip())
-                expenses.append(data)
-    except FileNotFoundError:
-        print("No expenses recorded yet.")
-        return
-        
-    if not expenses:
-        print("No data available to calculate statistics.")
-        return
-        
-    total_amount = sum(exp["Amount"] for exp in expenses)
-    total_entries = len(expenses)
-    
-    print(f"Total number of expenses: {total_entries}")
-    print(f"Total money spent: ${total_amount}")
+    print()
+    print("======== STATISTICS =========")
+    print(f'Total Expenses : {total_expense()}')
+    print(f'Average Expenses : {average_expenses()}')
+    print()
+    print(f'Highest Expense : {highest_expense()}')
+    print(f'Lowest Expense : {lowest_expense()}')
+    print()
+    print(total_by_category())
 
-if __name__ == "__main__":
-    main_menu()
+def total_expense():
+    expenses = load_from_file()
+    total = 0
+    for exp in expenses:
+        total = exp["Amount"]
+    return total
+
+
+
+def average_expenses():
+    expenses = load_from_file()
+    no_of_expenses = len(expenses)
+    average = total_expense()/no_of_expenses
+
+def highest_expense():
+    expenses = load_from_file()
+    highest_ex =  max(expenses , key = lambda x:x["Amount"])
+    print(f'{highest_ex["Expense Id"]} -- {highest_ex["Expense Name"]} -- {highest_ex["Amount"]} -- {highest_ex["Expense type"]}')
+
+
+def lowest_expense():
+    expenses = load_from_file()
+    lowest_ex =  min(expenses , key = lambda x:x["Amount"])
+    print(f'{lowest_ex["Expense Id"]} -- {lowest_ex["Expense Name"]} -- {lowest_ex["Amount"]} -- {lowest_ex["Expense type"]}')
+
+
+
+def total_by_category():
+    category_totals = {}
+    expenses = load_from_file()
+
+    for exp in expenses:
+        category = exp["Expense type"]
+        amount = exp["Amount"]
+        if category in category_totals:
+            category_totals[category] += amount
+        else:
+            category_totals[category] = amount
+    for category,total in category_totals:
+        print(f'{category} -- {total}')
+
+
+
+main_menu()
+
+
+
+
+
+
+
+
+
