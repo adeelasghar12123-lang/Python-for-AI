@@ -20,7 +20,7 @@ def main_menu():
             continue
 
         if command == 1:
-            add_expense()
+            add_expense(expenses)
         elif command == 2:
             view_expense()
         elif command == 3:
@@ -35,13 +35,41 @@ def main_menu():
             
         input('\nPress "Enter" to return to the main menu.')
 
-def add_expense():
+
+
+
+
+
+
+
+expenses = []
+
+def save_to_file(expenses):
+    try:
+        with open("expenseDiary.txt","w") as file:
+            json.dump(expenses,file,indent=4)
+    except json.JSONDecodeError:
+        print("Expense file is corrupted.")
+        return []
+
+def load_from_file():
+    with open("expenseDiary.txt","r") as file:
+        expenses.append(json.loads(file))
+        return expenses
+        
+
+
+
+
+
+
+def add_expense(expenses):
     print()
     while True :
         expense_name = input("Expense Name : ").strip().title()
         try:
-            amount = int(input("Amount : "))
-            if amount < 0 :
+            amount = float(input("Amount : "))
+            if amount < 1 :
                 raise ValueError
         except ValueError:
             print("Invalid amount, please re-enter details.")
@@ -51,60 +79,38 @@ def add_expense():
         break
         
     dictionary_to_save = {"Expense Name" : expense_name , "Amount" : amount , "Expense type" : expense_type}
-    
-    # Use json.dumps() to convert the dict to a string before writing
-    with open("expenseDiary.txt", "a") as file:
-        file.write(json.dumps(dictionary_to_save) + "\n")
-        
+    expenses.append(dictionary_to_save)
+    save_to_file(expenses)    
     print("Expense added successfully!")
+
+
+
+
 
 def view_expense():
     print("\n==== Expenses ====")
-    expenses = []
-    
-    try:
-        with open("expenseDiary.txt", "r") as file:
-            for line in file:
-                data = json.loads(line.strip())
-                expenses.append(data)
-    except FileNotFoundError:
-        print("No expenses recorded yet.")
+    expenses = load_from_file()
+    if expenses:
+        for exp in expenses:
+            print()
+            print(f'Expense Name : {exp["Expense Name"]}')
+            print(f'Amount : {exp["Amount"]}')
+            print(f'Expense Type : {exp["Expense type"]}')
+    else:
+        print("No expenses to show !")
         return
-
-    if not expenses:
-        print("No expenses to show.")
         
-    for exp in expenses:
-        print(f'Expense Name : {exp["Expense Name"]}')
-        print(f'Amount : {exp["Amount"]}')
-        print(f'Expense type : {exp["Expense type"]}\n')
+
+
+
+
+
+
+
 
 def search_expense():
     print()
-    expenses = []
-    exp_to_search = input("Search Expense Type (Category) : ").strip().title()
-    
-    try:
-        with open("expenseDiary.txt", "r") as file:
-            for line in file:
-                data = json.loads(line.strip())
-                expenses.append(data)
-    except FileNotFoundError:
-        print("No expenses recorded yet.")
-        return
-
-    found = False
-    print(f"\n--- Results for '{exp_to_search}' ---")
-    for exp in expenses:
-        # Changed from "Category" to "Expense type" to match your dictionary keys
-        if exp["Expense type"] == exp_to_search:
-            print(f'Expense Name : {exp["Expense Name"]}')
-            print(f'Amount : {exp["Amount"]}')
-            print(f'Expense type : {exp["Expense type"]}\n')
-            found = True
-            
-    if not found:
-        print("No expenses found for that type.")
+    expense_to_search = input
 
 def delete_expense():
     print()
