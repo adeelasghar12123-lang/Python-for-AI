@@ -4,7 +4,7 @@ class Student:
         self.age = age
         self.grade = grade
     def details(self):
-        print(F'I am {self.name} ! I am {self.age} years old ! My grade is {self.grade}')
+        print(f'I am {self.name} . I am {self.age} years old . My grade is {self.grade}.')
 
 
 s1 = Student("Adeel" , 21 , "B")
@@ -16,4 +16,3 @@ s1.details()
 s2.details()
 s3.details()
 s4.details()
-

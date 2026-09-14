@@ -1,6 +1,5 @@
 import sys
 import json
-
 def main_menu():
     while True:
         print("\n======== Main Menu =========")
