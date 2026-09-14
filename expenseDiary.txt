@@ -10,5 +10,11 @@
         "Expense Name": "Lunch",
         "Amount": 800.0,
         "Expense type": "Food"
+    },
+    {
+        "Expense Id": 3,
+        "Expense Name": "Mani",
+        "Amount": 900000.0,
+        "Expense type": "Food"
     }
 ]
