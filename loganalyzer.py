@@ -59,6 +59,15 @@ def common_level(list_of_dic = list_of_dic , log_level_dic = log_level_dic):
     for log in max_logs:
         print(f'Most common log : {log}')
 
+
+def search_log(list_of_dic = list_of_dic, log_list = log_list):
+    to_search = input("Search Log : ").lower().strip()
+    for line in log_list:
+        if to_search in line.lower().strip():
+            print(line)
+
+
 log_level()
 display_errors()
 common_level()
+search_log()
