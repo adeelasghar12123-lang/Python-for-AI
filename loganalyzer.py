@@ -66,8 +66,14 @@ def search_log(list_of_dic = list_of_dic, log_list = log_list):
         if to_search in line.lower().strip():
             print(line)
 
+def log_summary(list_of_dic = list_of_dic , log_level_dic = log_level_dic , log_list = log_list):
+    print(f' Total log entries : {len(log_list)}')
+    for key,value in log_level_dic.items():
+        print(f'{key} : {value}')
+        common_level()
+
 
 log_level()
 display_errors()
-common_level()
 search_log()
+log_summary()
