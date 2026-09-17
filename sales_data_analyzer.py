@@ -34,7 +34,42 @@ def best_product(sales):
             best_product = item["product"]
     return {best_product : best_quantity}
 
-mew = best_product(sales)
+def rev_by_cat(sales):
+    rev_bc = {}
+    for item in sales:
+        revenue = item["quantity"]*item["price"]
+        category_name = item["category"]
+        if category_name in rev_bc:
+            rev_bc[category_name] += revenue
+        else:
+            rev_bc[category_name] = revenue
+    return rev_bc
 
-for key,value in mew.items():
-    print(key,value)
+def expensive_sale(sales):
+    highest_amount = 0
+    for item in sales:
+        total_sale = item["quantity"]*item["price"]
+        if total_sale > highest_amount:
+            highest_amount = total_sale
+            product_name = item["product"]
+            product_sale =  total_sale
+    return {product_name : product_sale}
+
+def final_report():
+    print("====== SUMMARY ======")
+    print(f'TOTAL REVENUE : {total_revenue}')
+    print()
+    print("=== Revenue by product ===")
+    print()
+    rev_per_product_dic = rev_per_prdct(sales)
+    for key,value in rev_per_product_dic.items():
+        print(key,value)
+    print()
+    b_p = best_product(sales)
+    for key,value in b_p:
+        print(f'Best selling product is : {key}')
+    print()
+    print("=== REVENUE BY CATEGORY ===")
+    rev_by_cat_dic = rev_by_cat(sales)
+    for key,value in rev_by_cat_dic.items():
+        print(key,value)
