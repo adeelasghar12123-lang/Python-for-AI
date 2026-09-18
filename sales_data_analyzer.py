@@ -26,13 +26,9 @@ def rev_per_prdct(sales):
     return rev_pp
 
 def best_product(sales):
-    best_quantity = 0
-    best_product = ""
-    for item in sales:
-        if item["quantity"] > best_quantity:
-            best_quantity = item["quantity"]
-            best_product = item["product"]
-    return {best_product : best_quantity}
+    totals = sale_by_product(sales)
+    best_product_name = max(totals, key=totals.get)
+    return {best_product_name: totals[best_product_name]}
 
 def rev_by_cat(sales):
     rev_bc = {}
@@ -44,6 +40,16 @@ def rev_by_cat(sales):
         else:
             rev_bc[category_name] = revenue
     return rev_bc
+
+def sale_by_product(sales):
+    sale_by_pro = {}
+    for item in sales:
+        item_name = item["product"]
+        if item_name in sale_by_pro:
+            sale_by_pro[item_name] += item["quantity"]
+        else:
+            sale_by_pro[item_name] = item["quantity"]
+    return sale_by_pro
 
 def expensive_sale(sales):
     highest_amount = 0
@@ -57,7 +63,7 @@ def expensive_sale(sales):
 
 def final_report():
     print("====== SUMMARY ======")
-    print(f'TOTAL REVENUE : {total_revenue}')
+    print(f'TOTAL REVENUE : {total_revenue(sales)}')
     print()
     print("=== Revenue by product ===")
     print()
@@ -65,11 +71,24 @@ def final_report():
     for key,value in rev_per_product_dic.items():
         print(key,value)
     print()
+    print("=== QUANTITY SOLD BY PRODUCT === ")
+    s_b_p = sale_by_product(sales)
+    for key,value in s_b_p.items():
+        print(key,value)
+    print()
     b_p = best_product(sales)
-    for key,value in b_p:
+    for key,value in b_p.items():
         print(f'Best selling product is : {key}')
     print()
     print("=== REVENUE BY CATEGORY ===")
     rev_by_cat_dic = rev_by_cat(sales)
     for key,value in rev_by_cat_dic.items():
         print(key,value)
+    print()
+    print("=== Expensive sale === ")
+    ex_sale = expensive_sale(sales)
+    for key,value in ex_sale.items():
+        print(key,value)
+    print()
+
+final_report()
