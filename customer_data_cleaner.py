@@ -9,25 +9,34 @@ customers = [
 ]
 seen_emails = set()
 unique_customers = []
+duplicate_emails = []
 
 def cleaning(customers):
+    if not customers:
+        return
     for customer in customers:
         customer["name"] = customer["name"].title()
         customer["email"] = customer["email"].lower()
         customer["city"] = customer["city"].title()
-
 cleaning(customers)
 
-def deduplication(customers):
+def deduplication(customers,duplicate_emails):
+    if not customers:
+        return
     for customer in customers:
         if customer["email"] not in seen_emails:
             seen_emails.add(customer["email"])
             unique_customers.append(customer)
+        else:
+            duplicate_emails.append(customer["email"])
+    
+deduplication(customers,duplicate_emails)
 
-deduplication(customers)
-city = {}
 
-def customers_by_city(unique_customers,city):
+def customers_by_city(unique_customers):
+    city = {}
+    if not unique_customers:
+        return
     for customer in unique_customers:
         city_name = customer["city"]
         if city_name in city:
@@ -36,11 +45,13 @@ def customers_by_city(unique_customers,city):
             city[city_name] = 1
     return city
 
-city = customers_by_city(unique_customers,city)
+city = customers_by_city(unique_customers)
 
 
 
 def city_with_most_customers(city):
+    if not city:
+        return
     max_count = max(city.values())
     most_customers = []
     for key,value in city.items():
@@ -51,6 +62,8 @@ def city_with_most_customers(city):
 
 
 def unique_email_finder(unique_customers):
+    if not unique_customers:
+        return
     unique_email = {}
     for customer in unique_customers:
         email = customer["email"]
@@ -70,6 +83,10 @@ def final_report():
     print(f'ORIGINAL CUSTOMERS : {len(customers)}')
     print(f'UNIQUE CUSTOMERS : {len(unique_customers)}')
     print(f'DUPLICATE EMAILS : {len(customers)-len(unique_customers)}')
+    print()
+    print("Duplicate Email Addresses")
+    for mail in duplicate_emails:
+        print(mail)
     print()
     print("Customers by city")
     for key,value in city.items():
