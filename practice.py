@@ -1,3 +1,3 @@
-a = 10
-a = "Adeel"
+a = "ali hamza"
+a = a.title()
 print(a)
