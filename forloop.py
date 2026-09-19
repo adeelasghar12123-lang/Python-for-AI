@@ -1,6 +1,6 @@
 wi = []
 
-while (len(li)<5):
+while (len(wi)<5):
     wi.append(input("Enter into list : "))
 
 for item in li:
