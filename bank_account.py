@@ -1,6 +1,6 @@
 class bank_account:
     def __new__(cls, name, balance ):
-        if type(name) is not str or balance < 0:
+        if not isinstance(name,str) or not isinstance(balance,int) or balance < 0  :
             print("Enter valid details ! Account not created")
             return None
         return super().__new__(cls)
@@ -20,7 +20,7 @@ class bank_account:
             print("Enter a valid amount to withdraw !")
             return
         self.balance -= amount
-        self.transaction.append({"Withdrew" : amount})
+        self.transaction.append(f'Withdrew {amount}')
         print(f"{amount} successfully withdrew from {self.name}'s account ! Current balance is {self.balance}")
 
 
@@ -30,7 +30,7 @@ class bank_account:
             print("Enter a valid amount to deposit !")
             return
         self.balance += amount
-        self.transaction.append({"Deposited" : amount})
+        self.transaction.append(f'Deposited {amount}')
         print(f"{amount} successfully deposited in {self.name}'s account ! Current balance is {self.balance}")
 
 
@@ -42,8 +42,8 @@ class bank_account:
             print("No transactions made yet !")
         else:
             for trans in self.transaction:
-                for key,value in trans.items():
-                    print(key,value)
+                print(trans)
+
 
     def show_summary(self):
         print("==== ACCOUNT SUMMARY ====")
