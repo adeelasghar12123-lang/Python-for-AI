@@ -11,7 +11,6 @@ elif not re.search(r"[0-9]", password):
     valid = False
 elif not re.search(r"[$#@]", password):
     valid = False
-
 if valid:
     print("Valid password!")
 else:
