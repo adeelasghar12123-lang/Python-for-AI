@@ -16,5 +16,11 @@
         "Expense Name": "Mani",
         "Amount": 900000.0,
         "Expense type": "Food"
+    },
+        {
+        "Expense Id": 4,
+        "Expense Name": "mew",
+        "Amount": 900000.0,
+        "Expense type": "Pet"
     }
 ]
