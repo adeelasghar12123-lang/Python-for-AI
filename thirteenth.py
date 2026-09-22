@@ -1,7 +1,7 @@
 text = input("Enter a string: ")
 
-letters = 1
-digits = 1
+letters = 0
+digits = 0
 
 for char in text:
     if char.isalpha():
