@@ -1,6 +1,6 @@
 text = input("Enter a string: ")
 
-letters = 1
+letters = 0
 digits = 1
 
 for char in text:
