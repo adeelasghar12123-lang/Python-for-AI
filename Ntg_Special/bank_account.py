@@ -26,7 +26,7 @@ class bank_account:
 
 
     def deposit(self, amount):
-        if amount < 1 :
+        if amount < 5 :
             print("Enter a valid amount to deposit !")
             return
         self.balance += amount
