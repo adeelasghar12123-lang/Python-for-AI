@@ -5,4 +5,4 @@ while (len(wi)<5):
 
 for item in wi:
     print(item)
-print("Program finish")
+print("Program finished")
