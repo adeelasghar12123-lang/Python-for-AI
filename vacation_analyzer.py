@@ -32,7 +32,7 @@ vacation_plan = [
     },
 ]
 
-def get_cheapest_vacation(vacation_plan = vacation_plan ):
+def get_cheapest_vacation(vacation_plan):
     time = input("Input time duration for vacations(in days or in weeks or in months) : ") 
     parts = time.split()
     if len(parts) != 2:
@@ -70,7 +70,83 @@ def get_cheapest_vacation(vacation_plan = vacation_plan ):
     print(f'Cheapest Destination : {final} ${min_cost}')
         
 
-get_cheapest_vacation()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def get_max_days_for_budget(vacation_plan):
+    try:
+        budget = float(input("Enter your maximum budget: $"))
+        if budget <= 0:
+            print("Please enter a valid budget greater than 0.")
+            return
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        return
+
+    best_place = ""
+    max_days = 0
+    best_cost = 0
+
+    for plan in vacation_plan:
+        days = 1
+        
+        # Keep increasing the days by 1 until the cost exceeds the budget
+        while True:
+            # Reusing your original car rental logic!
+            rent_weeks = days // 7
+            if days % 7 != 0:
+                rent_weeks += 1
+                
+            cost = plan["return flight"] + (plan["hotel per day"] * days) + (plan["weekly car rental"] * rent_weeks)
+            
+            # Check if this duration is affordable
+            if cost <= budget:
+                if days > max_days:
+                    max_days = days
+                    best_place = plan["place"]
+                    best_cost = cost
+                # Tie-breaker: If it gives the SAME max days, but is cheaper, pick this one instead
+                elif days == max_days and cost < best_cost:
+                    best_place = plan["place"]
+                    best_cost = cost
+                    
+                days += 1 # Move to check the next day
+            else:
+                break # Cost exceeded budget, break the loop and check the next destination
+                
+    if max_days == 0:
+        print(f"\nSorry, a budget of ${budget} is too low to stay at any destination for even 1 day.")
+    else:
+        print(f"\n--- Best Recommendation for ${budget} ---")
+        print(f"Destination: {best_place}")
+        print(f"Max Duration: {max_days} days")
+        print(f"Total Cost: ${best_cost}")
+
+# --- Main Menu ---
+print("Welcome to the Vacation Planner!")
+print("1. Find the cheapest destination for a specific duration")
+print("2. Find the longest possible vacation for a specific budget")
+choice = input("Enter 1 or 2: ")
+
+if choice == "1":
+    get_cheapest_vacation(vacation_plan)
+elif choice == "2":
+    get_max_days_for_budget(vacation_plan)
+else:
+    print("Invalid choice. Please run the script again.")
 
