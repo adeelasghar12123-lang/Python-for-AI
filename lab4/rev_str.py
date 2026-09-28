@@ -12,8 +12,7 @@ def reverse_string(text):
         
     return reversed_text
 
-
-original = "Scorpion"
+original = input("Enter a string :")
 result = reverse_string(original)
 
 print(f"Original: {original}")
